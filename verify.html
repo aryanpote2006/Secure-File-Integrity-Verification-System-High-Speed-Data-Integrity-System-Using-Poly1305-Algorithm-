@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">Integrity Verification Module</span><h1>Compare file copy with stored MAC</h1></div></header>
+<section class="two-col">
+    <form method="post" enctype="multipart/form-data" class="panel form-panel">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Registered File
+            <select name="file_id" required>
+                {% for file in files %}<option value="{{ file.id }}">{{ file.original_filename }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>File Copy to Verify<input type="file" name="file" required></label>
+        <button class="primary" type="submit">Verify Integrity</button>
+    </form>
+    <div class="panel result-panel">
+        {% if result %}
+            <span class="status-orb {{ 'danger' if result.status == 'File Tampered' else 'good' }}"></span>
+            <h2>{{ result.status }}</h2>
+            <p>{{ result.remarks }}</p>
+            <div class="mac-box"><small>Stored MAC</small><code>{{ result.stored }}</code></div>
+            <div class="mac-box"><small>Calculated MAC</small><code>{{ result.calculated }}</code></div>
+        {% else %}
+            <h2>Awaiting verification</h2>
+            <p class="muted">Choose the registered baseline and upload the received or stored file copy. The system will recalculate Poly1305 and compare values.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

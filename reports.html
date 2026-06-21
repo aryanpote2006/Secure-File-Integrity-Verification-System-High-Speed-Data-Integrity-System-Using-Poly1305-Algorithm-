@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">Reports Section</span><h1>Security analytics</h1></div><a class="button primary" href="{{ url_for('main.download_report') }}">Download PDF Report</a></header>
+<section class="two-col">
+    <div class="panel">
+        <h2>Verification Statistics</h2>
+        <canvas id="statsChart" data-verified="{{ stats.verified }}" data-tampered="{{ stats.tampered }}" data-registered="{{ stats.registered }}" width="520" height="260"></canvas>
+    </div>
+    <div class="panel">
+        <h2>Security Summary</h2>
+        <div class="score-ring" style="--score: {{ 100 if stats.verified + stats.tampered == 0 else ((stats.verified / (stats.verified + stats.tampered)) * 100)|round|int }}%"><span>{{ 100 if stats.verified + stats.tampered == 0 else ((stats.verified / (stats.verified + stats.tampered)) * 100)|round|int }}%</span></div>
+        <p class="muted">Integrity score is calculated from successful verifications against tamper detections.</p>
+    </div>
+</section>
+{% endblock %}

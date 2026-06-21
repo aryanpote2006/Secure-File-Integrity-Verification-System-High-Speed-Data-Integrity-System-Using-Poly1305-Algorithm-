@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head">
+    <div>
+        <span class="eyebrow">Security Operations Dashboard</span>
+        <h1>File integrity command center</h1>
+    </div>
+    <a class="button primary" href="{{ url_for('main.upload') }}">Register New File</a>
+</header>
+
+<section class="stat-grid">
+    <article class="stat"><span>Total Files</span><strong>{{ total_files }}</strong><small>Registered baselines</small></article>
+    <article class="stat good"><span>Verified</span><strong>{{ verified }}</strong><small>Successful checks</small></article>
+    <article class="stat danger"><span>Tampered</span><strong>{{ tampered }}</strong><small>MAC mismatches</small></article>
+    <article class="stat"><span>Integrity Score</span><strong>{{ 100 if verified + tampered == 0 else ((verified / (verified + tampered)) * 100)|round|int }}%</strong><small>Verification confidence</small></article>
+</section>
+
+<section class="two-col">
+    <div class="panel">
+        <div class="panel-head"><h2>Recent File Registry</h2><a href="{{ url_for('main.files') }}">View all</a></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>File</th><th>Status</th><th>Uploaded</th></tr></thead>
+                <tbody>
+                {% for file in files %}
+                    <tr><td><a href="{{ url_for('main.file_detail', file_id=file.id) }}">{{ file.original_filename }}</a></td><td><span class="badge {{ file.status }}">{{ file.status }}</span></td><td>{{ file.upload_date }}</td></tr>
+                {% else %}<tr><td colspan="3">No files registered yet.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-head"><h2>Recent Verification Activities</h2><a href="{{ url_for('main.logs') }}">Audit logs</a></div>
+        <div class="activity-list">
+            {% for item in recent %}
+            <div class="activity">
+                <span class="pulse {{ 'alert' if item.result == 'File Tampered' else 'ok' }}"></span>
+                <div><strong>{{ item.result }}</strong><small>{{ item.original_filename or item.submitted_filename }} by {{ item.username or 'system' }} · {{ item.verification_date }}</small></div>
+            </div>
+            {% else %}<p class="muted">No verification events yet.</p>{% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

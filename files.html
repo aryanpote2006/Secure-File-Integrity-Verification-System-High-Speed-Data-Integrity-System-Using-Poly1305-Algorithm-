@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">File Registry</span><h1>Stored MAC records</h1></div></header>
+<form class="filter-bar" method="get">
+    <input name="q" placeholder="Search file name" value="{{ request.args.get('q', '') }}">
+    <input type="date" name="start" value="{{ request.args.get('start', '') }}">
+    <select name="status">
+        <option value="">All statuses</option>
+        {% for status in ['stored','verified','tampered'] %}<option value="{{ status }}" {% if request.args.get('status') == status %}selected{% endif %}>{{ status }}</option>{% endfor %}
+    </select>
+    <select name="sort"><option value="newest">Newest</option><option value="oldest" {% if request.args.get('sort') == 'oldest' %}selected{% endif %}>Oldest</option></select>
+    <button type="submit">Apply</button>
+</form>
+<section class="panel table-wrap">
+    <table>
+        <thead><tr><th>File</th><th>Size</th><th>Status</th><th>MAC</th><th>Upload Date</th></tr></thead>
+        <tbody>
+        {% for file in files %}
+        <tr>
+            <td><a href="{{ url_for('main.file_detail', file_id=file.id) }}">{{ file.original_filename }}</a></td>
+            <td>{{ (file.file_size / 1024)|round(1) }} KB</td>
+            <td><span class="badge {{ file.status }}">{{ file.status }}</span></td>
+            <td><code>{{ file.poly1305_mac[:20] }}...</code></td>
+            <td>{{ file.upload_date }}</td>
+        </tr>
+        {% else %}<tr><td colspan="5">No matching files.</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

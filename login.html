@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Login | Secure File Integrity Verification{% endblock %}
+{% block content %}
+<section class="auth-card">
+    <div class="auth-copy">
+        <span class="eyebrow">Cybersecurity Engineering Project</span>
+        <h1>Secure File Integrity Verification System</h1>
+        <p>Verify stored and transmitted files using Poly1305 message authentication codes, audit logs, and tamper alerts.</p>
+    </div>
+    <form method="post" class="panel form-panel">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Sign in</h2>
+        <label>Username or Email<input name="identity" required autocomplete="username"></label>
+        <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+        <div class="form-row">
+            <span></span>
+            <a href="{{ url_for('main.forgot_password') }}">Forgot Password?</a>
+        </div>
+        <button class="primary" type="submit">Login</button>
+        <p class="muted">No account yet? <a href="{{ url_for('main.register') }}">Create one</a></p>
+    </form>
+</section>
+{% endblock %}

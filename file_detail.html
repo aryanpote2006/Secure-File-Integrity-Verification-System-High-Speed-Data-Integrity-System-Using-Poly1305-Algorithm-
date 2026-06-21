@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head">
+    <div><span class="eyebrow">Verification Certificate Ready</span><h1>{{ file.original_filename }}</h1></div>
+    <a class="button" href="{{ url_for('main.certificate', file_id=file.id) }}">Download Certificate</a>
+</header>
+<section class="panel detail-grid">
+    <div><small>Poly1305 MAC</small><code>{{ file.poly1305_mac }}</code></div>
+    <div><small>SHA-256 Fingerprint</small><code>{{ file.file_hash }}</code></div>
+    <div><small>Status</small><span class="badge {{ file.status }}">{{ file.status }}</span></div>
+    <div><small>Uploaded By</small><strong>{{ file.username }}</strong></div>
+    <div><small>Upload Date</small><strong>{{ file.upload_date }}</strong></div>
+    <div><small>File Size</small><strong>{{ (file.file_size / 1024)|round(1) }} KB</strong></div>
+</section>
+<section class="panel table-wrap">
+    <div class="panel-head"><h2>Audit Trail</h2></div>
+    <table>
+        <thead><tr><th>Date</th><th>Result</th><th>Remarks</th><th>Submitted File</th></tr></thead>
+        <tbody>{% for log in logs %}<tr><td>{{ log.verification_date }}</td><td>{{ log.result }}</td><td>{{ log.remarks }}</td><td>{{ log.submitted_filename }}</td></tr>{% endfor %}</tbody>
+    </table>
+</section>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">Audit Trail System</span><h1>Verification logs</h1></div><a class="button" href="{{ url_for('main.download_logs') }}">Download CSV</a></header>
+<form class="filter-bar" method="get">
+    <input name="q" placeholder="Search file" value="{{ request.args.get('q', '') }}">
+    <select name="result">
+        <option value="">All results</option>
+        {% for result in ['Registered','Integrity Verified','File Tampered'] %}<option value="{{ result }}" {% if request.args.get('result') == result %}selected{% endif %}>{{ result }}</option>{% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+</form>
+<section class="panel table-wrap">
+    <table>
+        <thead><tr><th>User</th><th>File</th><th>Date</th><th>Result</th><th>IP</th><th>Remarks</th></tr></thead>
+        <tbody>
+        {% for log in logs %}
+        <tr><td>{{ log.username }}</td><td>{{ log.original_filename or log.submitted_filename }}</td><td>{{ log.verification_date }}</td><td><span class="badge {{ 'tampered' if log.result == 'File Tampered' else 'verified' }}">{{ log.result }}</span></td><td>{{ log.ip_address }}</td><td>{{ log.remarks }}</td></tr>
+        {% else %}<tr><td colspan="6">No logs found.</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="page-head"><div><span class="eyebrow">Administrator Console</span><h1>User, file, and alert monitoring</h1></div></header>
+<section class="panel table-wrap">
+    <div class="panel-head"><h2>Tamper Alerts</h2></div>
+    <table><thead><tr><th>User</th><th>File</th><th>Date</th><th>Remarks</th></tr></thead><tbody>
+    {% for alert in alerts %}<tr><td>{{ alert.username }}</td><td>{{ alert.original_filename }}</td><td>{{ alert.verification_date }}</td><td>{{ alert.remarks }}</td></tr>
+    {% else %}<tr><td colspan="4">No tamper attempts recorded.</td></tr>{% endfor %}
+    </tbody></table>
+</section>
+<section class="two-col">
+    <div class="panel table-wrap">
+        <h2>Users</h2>
+        <table><thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th></tr></thead><tbody>{% for user in users %}<tr><td>{{ user.id }}</td><td>{{ user.username }}</td><td>{{ user.email }}</td><td>{{ user.role }}</td></tr>{% endfor %}</tbody></table>
+    </div>
+    <div class="panel table-wrap">
+        <h2>Uploaded Files</h2>
+        <table><thead><tr><th>File</th><th>Owner</th><th>Status</th><th>Action</th></tr></thead><tbody>
+        {% for file in files %}
+        <tr><td>{{ file.original_filename }}</td><td>{{ file.username }}</td><td><span class="badge {{ file.status }}">{{ file.status }}</span></td><td><form method="post" action="{{ url_for('main.delete_file', file_id=file.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="danger-button" type="submit">Delete</button></form></td></tr>
+        {% endfor %}
+        </tbody></table>
+    </div>
+</section>
+{% endblock %}

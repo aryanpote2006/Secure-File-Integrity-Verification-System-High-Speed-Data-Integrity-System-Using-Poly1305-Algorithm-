@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Secure File Integrity Verification System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<main class="{% if g.user %}shell{% else %}auth-shell{% endif %}">
+    {% if g.user %}
+    <header class="top-navbar">
+        <div class="nav-brand">
+            <span class="brand-mark">P5</span>
+            <div>
+                <strong>Secure File Integrity Verification System</strong>
+                <small>Poly1305 MAC Security Console</small>
+            </div>
+        </div>
+        <nav>
+            <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('main.upload') }}">Upload</a>
+            <a href="{{ url_for('main.verify') }}">Verify</a>
+            <a href="{{ url_for('main.files') }}">Files</a>
+            <a href="{{ url_for('main.logs') }}">Logs</a>
+            <a href="{{ url_for('main.reports') }}">Reports</a>
+            {% if g.user.role == 'admin' %}<a href="{{ url_for('main.admin') }}">Admin</a>{% endif %}
+            <a class="logout-link" href="{{ url_for('main.logout') }}">Logout</a>
+        </nav>
+    </header>
+    {% endif %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-stack">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
